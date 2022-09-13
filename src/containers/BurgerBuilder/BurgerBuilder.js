@@ -48,25 +48,19 @@ export class BurgerBuilder extends Component {
 
     purchaseContinueHandler = () => {
         // alert('You continued!')
-        this.setState({ loading: true });
-        const post = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Nika',
-                address: {
-                    city: 'Tbilisi',
-                    street: 'Pekini'
-                },
-                email: 'pekinelinika@gmail.com'
-            }
-        };
-
-        axios.post('/orders.json', post)
-            .then(response => this.setState({ loading: false, purchasing: false }))
-            .catch(error => this.setState({ loading: false, purchasing: false }));
+        const queryParams = [];
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+        }
+        queryParams.push('price=' + this.state.totalPrice);
+        const queryString = queryParams.join('&');
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
+        });
+        console.log(this.props.history);
     }
-
+    
     addIngredientHandler = (type) => {
         const oldCount = this.state.ingredients[type];
         const updatedCount = oldCount + 1;
@@ -101,15 +95,17 @@ export class BurgerBuilder extends Component {
     }
 
     componentDidMount() {
+        // console.log(this.props);
         axios.get('https://fastfoodburger-b4f23-default-rtdb.europe-west1.firebasedatabase.app/Ingredients.json')
             .then(response => this.setState({ ingredients: response.data }))
             .catch(error => {this.setState({error: true})});
-        console.log("fetched data");
+        // console.log("fetched data");
         // console.log(this.state.error.message);
-        console.log(this.state.ingredients);
+        // console.log(this.state.ingredients);
     }
 
     render() {
+        // console.log(this.props);
         const disabledInfo = {
             ...this.state.ingredients
         };
