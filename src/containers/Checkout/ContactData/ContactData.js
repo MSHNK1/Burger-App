@@ -104,13 +104,18 @@ export class ContactData extends Component {
         const order = {
             ingredients: this.props.ings,
             price: this.props.prc,
-            orderData: formData
+            orderData: formData,
+            userId: this.props.userId
         };
-        this.props.onOrderBurger(order);
+        this.props.onOrderBurger(this.props.token, order);
     }
 
     checkValidity(value, rules) {
         let isValid = true;
+        if (!rules) {
+            return true;
+        }
+
         if (rules.required) {
             isValid = value.trim() !== '' && isValid
         }
@@ -121,6 +126,11 @@ export class ContactData extends Component {
 
         if (rules.maxLength) {
             isValid = value.length <= rules.maxLength && isValid
+        }
+
+        if (rules.isNumeric) {
+            const pattern = /^\d+$/;
+            isValid = pattern.test(value) && isValid
         }
 
         return isValid;
@@ -190,13 +200,15 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         prc: state.burgerBuilder.totalPrice,
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userId
     }
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+        onOrderBurger: (token, orderData) => dispatch(actions.purchaseBurger(token, orderData))
     }
 };
 

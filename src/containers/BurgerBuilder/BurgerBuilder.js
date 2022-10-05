@@ -50,7 +50,14 @@ export class BurgerBuilder extends Component {
     }
 
     purchaseHandler = () => {
-        this.setState({ purchasing: true })
+        if (this.props.isAuthenticated) {
+            this.setState({ purchasing: true });
+        } else {
+            this.props.onSetAuthRedirectPath('/checkout');
+            console.log('11111111111');
+            console.log(this.props.history);
+            this.props.history.push('/auth')
+        }
     }
 
     purchaseCancelHandler = () => {
@@ -66,10 +73,11 @@ export class BurgerBuilder extends Component {
         // }
         // queryParams.push('price=' + this.props.prc);
         // const queryString = queryParams.join('&');
+        console.log("history.push   /checkout");
         this.props.history.push('/checkout');
         // console.log(this.props.history);
     }
-    
+
     // addIngredientHandler = (type) => {
     //     const oldCount = this.state.ingredients[type];
     //     const updatedCount = oldCount + 1;
@@ -106,12 +114,12 @@ export class BurgerBuilder extends Component {
     componentDidMount() {
         console.log(this.props);
         this.props.onInitIngredients();
-    //     axios.get('https://fastfoodburger-b4f23-default-rtdb.europe-west1.firebasedatabase.app/Ingredients.json')
-    //         .then(response => this.setState({ ingredients: response.data }))
-    //         .catch(error => {this.setState({error: true})});
-    //     // console.log("fetched data");
-    //     // console.log(this.state.error.message);
-    //     // console.log(this.state.ingredients);
+        //     axios.get('https://fastfoodburger-b4f23-default-rtdb.europe-west1.firebasedatabase.app/Ingredients.json')
+        //         .then(response => this.setState({ ingredients: response.data }))
+        //         .catch(error => {this.setState({error: true})});
+        //     // console.log("fetched data");
+        //     // console.log(this.state.error.message);
+        //     // console.log(this.state.ingredients);
     }
 
     render() {
@@ -132,6 +140,7 @@ export class BurgerBuilder extends Component {
                 <Aux>
                     <Burger ingredients={this.props.ings} />
                     <BuildControls
+                        isAuth={this.props.isAuthenticated}
                         ingredientAdded={this.props.onIngredientAdded}
                         ingredientRemoved={this.props.onIngredientRemoved}
                         disabled={disabledInfo}
@@ -166,7 +175,8 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         prc: state.burgerBuilder.totalPrice,
-        error: state.burgerBuilder.error
+        error: state.burgerBuilder.error,
+        isAuthenticated: state.auth.token !== null
     }
 };
 
@@ -175,7 +185,8 @@ const mapDispatchToProps = dispatch => {
         onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
         onIngredientRemoved: (ingName) => dispatch(actions.removeIngredient(ingName)),
         onInitIngredients: () => dispatch(actions.initIngredients()),
-        onPurchaseInit: () => dispatch(actions.purchaseInit())
+        onPurchaseInit: () => dispatch(actions.purchaseInit()),
+        onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
     }
 }
 
