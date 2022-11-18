@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+// this is used only in class-based components
+
 const asyncComponent = (importComponent) => {
     return class extends Component {
         state = {
