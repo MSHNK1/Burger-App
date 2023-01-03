@@ -19,7 +19,7 @@ const burger = (props) => {
     // Array(3) means [, ,]  - so three empty slots
     
     if (transformedIngredients.length === 0) {
-        transformedIngredients = <p>Please start adding ingredients</p>
+        transformedIngredients = <p>Please start adding ingredients...</p>
     }
 
     // console.log(transformedIngredients);
