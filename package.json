@@ -70,8 +70,7 @@
   },
   "scripts": {
     "start": "node scripts/start.js",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
-    "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
+    "build": "set \"GENERATE_SOURCEMAP=false\" && node scripts/build.js",
     "test": "node scripts/test.js"
   },
   "eslintConfig": {
